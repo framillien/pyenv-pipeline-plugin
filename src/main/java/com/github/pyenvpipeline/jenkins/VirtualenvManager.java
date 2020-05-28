@@ -183,7 +183,7 @@ public class VirtualenvManager implements Serializable {
         return new BourneShellScript("env");
     }
 
-    private EnvVars fromEnvOutput(String commandOutput) {
+    protected EnvVars fromEnvOutput(String commandOutput) {
         EnvVars result = new EnvVars();
 
         for (String line: commandOutput.split(Pattern.quote("\n"))) {
@@ -199,7 +199,7 @@ public class VirtualenvManager implements Serializable {
             }
 
             if (!skip) {
-                result.addLine(line);
+                result.addLine(line.trim());
             }
         }
 

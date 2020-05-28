@@ -1,5 +1,6 @@
 package com.github.pyenvpipeline.jenkins;
 
+import hudson.EnvVars;
 import hudson.Launcher;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.junit.Before;
@@ -61,5 +62,17 @@ public class VirtualenvManagerTest {
         newPath = "/venv:" + newPath;
         result = manager.processPathValues(originalPath, newPath, stepContextWrapper);
         assertEquals(result, "/venv:/venv/bin");
+    }
+
+    @Test
+    public void testEnvVarsHandling() throws Exception {
+      VirtualenvManager manager = VirtualenvManager.getInstance();
+      EnvVars ref = new EnvVars("ENV_VAR_1", "something", "VIRTUAL_ENV", "a_path", "ENV_VAR_2" ,"anotherthing");
+
+      EnvVars env1 = manager.fromEnvOutput("ENV_VAR_1=something\n\rVIRTUAL_ENV=a_path\n\rENV_VAR_2=anotherthing\n\r");
+      assertEquals(ref, env1);
+
+      EnvVars env2 = manager.fromEnvOutput("ENV_VAR_1=something\nVIRTUAL_ENV=a_path\nENV_VAR_2=anotherthing\n");
+      assertEquals(ref, env2);
     }
 }
